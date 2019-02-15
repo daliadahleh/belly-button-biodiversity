@@ -20,12 +20,8 @@ function buildMetadata(sample) {
 
 function buildCharts(sample) {
 
-  // @TODO: Use `d3.json` to fetch the sample data for the plots
+  // fetch the sample data for the plots
   d3.json("/samples/"+sample).then(function(response) {
-
-    //--------------------------------- BUBBLE CHART ---------------------------------//
-  
-
 
     //---------------------------------- PIE CHART ----------------------------------// 
 
@@ -49,20 +45,40 @@ function buildCharts(sample) {
     }
 
     // plot
-    var data = [{
+    var pieData = [{
       values: values,
       labels: ids,
-      hoverinfo: 'text',
       hovertext: labels,
       type: "pie"
     }];
 
-    var layout = {
-      height: 500,
-      width: 600
+    var pieLayout = {
+      height: 600,
+      width: 700
     };
 
-    Plotly.newPlot("pie", data, layout);
+    Plotly.newPlot("pie", pieData, pieLayout);
+
+    //--------------------------------- BUBBLE CHART ---------------------------------//
+  
+    var bubbleData = [{
+      x: response.otu_ids,
+      y: response.sample_values,
+      mode: "markers",
+      marker: {
+        size: response.sample_values,
+        color: response.otu_ids
+      },
+      text: response.otu_labels
+    }];
+
+    var bubbleLayout = {
+      showlegend: false,
+      height: 600,
+      width: 1100,
+    };
+
+    Plotly.newPlot("bubble", bubbleData, bubbleLayout);
 
   });
 }
